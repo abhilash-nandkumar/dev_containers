@@ -1,4 +1,5 @@
-FROM osrf/ros:humble-desktop-full
+ARG ROS_DISTRO=humble
+FROM osrf/ros:${ROS_DISTRO}-desktop-full
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -11,12 +12,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     clang-format \
 	zsh \
     python3-colcon-common-extensions \
-    ros-humble-plotjuggler \
-    ros-humble-plotjuggler-ros \
+    ros-${ROS_DISTRO}-plotjuggler \
+    ros-${ROS_DISTRO}-plotjuggler-ros \
     && rm -rf /var/lib/apt/lists/*
 
 SHELL ["/bin/zsh","-c"]
-RUN echo "source /opt/ros/humble/setup.zsh" >> /etc/bash.bashrc
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.zsh" >> /etc/bash.bashrc
 
 ARG HOST_UID=1000
 ARG HOST_GID=1000

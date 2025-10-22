@@ -2,12 +2,39 @@ services:
   ros2-humble:
     build:
       context: .
-      dockerfile: Dockerfile.humble
+      dockerfile: Dockerfile
       args:
         HOST_UID: ${UID}
         HOST_GID: ${GID}
         HOST_USER: ${USER}
+        ROS_DISTRO: humble
     container_name: ros2-humble
+    command: sleep infinity
+    # stdin_open: true
+    # tty: true
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /home/${USER}/git:/home/${USER}/git
+      - ~/.zsh_history:/home/${USER}/.zsh_history
+      - ~/.zshrc:/home/${USER}/.zshrc
+
+    network_mode: host
+    privileged: true
+  
+  ros1-noetic:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        HOST_UID: ${UID}
+        HOST_GID: ${GID}
+        HOST_USER: ${USER}
+        ROS_DISTRO: noetic
+    container_name: ros1-noetic
     command: sleep infinity
     # stdin_open: true
     # tty: true
