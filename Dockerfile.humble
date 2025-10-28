@@ -1,20 +1,44 @@
 ARG ROS_DISTRO=humble
+
 FROM osrf/ros:${ROS_DISTRO}-desktop-full
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+	software-properties-common \
     git \
     curl \
     wget \
     gdb \
-    clangd \
-    clang-format \
+	vim \
 	zsh \
+	ccache \
+	mold \
+	ninja-build \
     python3-colcon-common-extensions \
+	python3-colcon-mixin \
     ros-${ROS_DISTRO}-plotjuggler \
     ros-${ROS_DISTRO}-plotjuggler-ros \
+    ros-${ROS_DISTRO}-canopen-interfaces \
+    ros-${ROS_DISTRO}-control-msgs \
     && rm -rf /var/lib/apt/lists/*
+
+RUN colcon mixin update default
+
+RUN add-apt-repository "ppa:borglab/gtsam-release-4.2" && \
+    wget -qO /etc/apt/trusted.gpg.d/apt.llvm.org.asc https://apt.llvm.org/llvm-snapshot.gpg.key && \
+    echo "deb http://apt.llvm.org/$(lsb_release -sc)/ llvm-toolchain-$(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/apt.llvm.org.list && \
+    apt-get update && apt-get install -y --no-install-recommends \
+	libgtsam-dev \
+	libgtsam-unstable-dev \
+	libceres-dev \
+	libgoogle-glog-dev \
+	libatlas-base-dev \
+	clangd-15 \
+	clang-format-15
+
+# TODO install dependencies automatically from the workspace
+# RUN rosdep install -i -y --from-paths src
 
 SHELL ["/bin/zsh","-c"]
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.zsh" >> /etc/bash.bashrc

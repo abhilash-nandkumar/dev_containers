@@ -2,7 +2,7 @@ services:
   ros2-humble:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.humble
       args:
         HOST_UID: ${UID}
         HOST_GID: ${GID}
@@ -28,7 +28,7 @@ services:
   ros1-noetic:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.noetic
       args:
         HOST_UID: ${UID}
         HOST_GID: ${GID}

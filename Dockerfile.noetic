@@ -1,0 +1,56 @@
+ARG ROS_DISTRO=noetic
+
+FROM osrf/ros:${ROS_DISTRO}-desktop-full
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+	software-properties-common \
+    git \
+    curl \
+    wget \
+    gdb \
+	vim \
+	zsh \
+	ccache \
+	ninja-build \
+    python3-colcon-common-extensions \
+	python3-colcon-mixin \
+    ros-${ROS_DISTRO}-plotjuggler \
+    ros-${ROS_DISTRO}-plotjuggler-ros \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN colcon mixin add default https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml && \
+    colcon mixin update default
+
+RUN add-apt-repository "ppa:borglab/gtsam-release-4.2" && \
+    wget -qO /etc/apt/trusted.gpg.d/apt.llvm.org.asc https://apt.llvm.org/llvm-snapshot.gpg.key && \
+    echo "deb http://apt.llvm.org/$(lsb_release -sc)/ llvm-toolchain-$(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/apt.llvm.org.list && \
+    apt-get update && apt-get install -y --no-install-recommends \
+	libgtsam-dev \
+	libgtsam-unstable-dev \
+	libceres-dev \
+	libgoogle-glog-dev \
+	libatlas-base-dev \
+	clangd-18 \
+	clang-format-18
+
+# TODO install dependencies automatically from the workspace
+# RUN rosdep install -i -y --from-paths src
+
+SHELL ["/bin/zsh","-c"]
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.zsh" >> /etc/bash.bashrc
+
+ARG HOST_UID=1000
+ARG HOST_GID=1000
+ARG HOST_USER=dev
+
+RUN groupadd -g ${HOST_GID} ${HOST_USER} && \
+    useradd -m -u ${HOST_UID} -g ${HOST_GID} -s /bin/bash ${HOST_USER} && \
+    usermod -aG sudo ${HOST_USER} && \
+	echo "${HOST_USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${HOST_USER}
+
+USER ${HOST_USER}
+WORKDIR /home/${HOST_USER}
+
+CMD ["zsh"]
