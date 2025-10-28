@@ -34,8 +34,8 @@ RUN add-apt-repository "ppa:borglab/gtsam-release-4.2" && \
 	libceres-dev \
 	libgoogle-glog-dev \
 	libatlas-base-dev \
-	clangd-15 \
-	clang-format-15
+	clangd\
+	clang-format
 
 # TODO install dependencies automatically from the workspace
 # RUN rosdep install -i -y --from-paths src
