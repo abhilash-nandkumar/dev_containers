@@ -20,9 +20,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-plotjuggler-ros \
     && rm -rf /var/lib/apt/lists/*
 
-RUN colcon mixin add default https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml && \
-    colcon mixin update default
-
 RUN add-apt-repository "ppa:borglab/gtsam-release-4.2" && \
     wget -qO /etc/apt/trusted.gpg.d/apt.llvm.org.asc https://apt.llvm.org/llvm-snapshot.gpg.key && \
     echo "deb http://apt.llvm.org/$(lsb_release -sc)/ llvm-toolchain-$(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/apt.llvm.org.list && \
@@ -52,5 +49,10 @@ RUN groupadd -g ${HOST_GID} ${HOST_USER} && \
 
 USER ${HOST_USER}
 WORKDIR /home/${HOST_USER}
+
+# install mixins in ~/{USER}
+RUN colcon mixin add mixins https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml && \
+    colcon mixin update mixins
+
 
 CMD ["zsh"]
