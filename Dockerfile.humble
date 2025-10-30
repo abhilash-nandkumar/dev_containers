@@ -15,13 +15,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	ccache \
 	mold \
 	ninja-build \
+	python3-pip \
+	python3-venv \
+	python-is-python3 \
     python3-colcon-common-extensions \
 	python3-colcon-mixin \
     ros-${ROS_DISTRO}-plotjuggler \
     ros-${ROS_DISTRO}-plotjuggler-ros \
     ros-${ROS_DISTRO}-canopen-interfaces \
     ros-${ROS_DISTRO}-control-msgs \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* && pip install \
+	pre-commit
 
 RUN add-apt-repository "ppa:borglab/gtsam-release-4.2" && \
     wget -qO /etc/apt/trusted.gpg.d/apt.llvm.org.asc https://apt.llvm.org/llvm-snapshot.gpg.key && \
@@ -53,8 +57,9 @@ RUN groupadd -g ${HOST_GID} ${HOST_USER} && \
 USER ${HOST_USER}
 WORKDIR /home/${HOST_USER}
 
-# install mixins in ~/{USER}
+# installs needed in ~/{USER}
 RUN colcon mixin add mixins https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml && \
-    colcon mixin update mixins
+    colcon mixin update mixins && \
+	rosdep update
 
 CMD ["zsh"]
