@@ -10,7 +10,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     wget \
     gdb \
-	vim \
+	man-db \
+	neovim \
+	net-tools \
+	terminator \
 	zsh \
 	ccache \
 	ninja-build \
@@ -21,6 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	python3-colcon-mixin \
     ros-${ROS_DISTRO}-plotjuggler \
     ros-${ROS_DISTRO}-plotjuggler-ros \
+    ros-${ROS_DISTRO}-rqt-tf-tree \
     && rm -rf /var/lib/apt/lists/* && pip install \
 	pre-commit
 

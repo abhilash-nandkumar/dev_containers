@@ -10,7 +10,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     wget \
     gdb \
-	vim \
+	man-db \
+	neovim \
+	net-tools \
+	terminator \
 	zsh \
 	ccache \
 	mold \
@@ -20,6 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	python-is-python3 \
     python3-colcon-common-extensions \
 	python3-colcon-mixin \
+    ros-${ROS_DISTRO}-rqt-tf-tree \
     ros-${ROS_DISTRO}-plotjuggler \
     ros-${ROS_DISTRO}-plotjuggler-ros \
     ros-${ROS_DISTRO}-canopen-interfaces \
